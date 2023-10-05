@@ -1,0 +1,44 @@
+-- Assignment Lab 2 - triggers
+use 169595_lab2_triggers;
+-- Show employees table creation script
+show create table employees;
+-- Creating employees_undo table script
+CREATE TABLE `employees_undo` (
+    `date_of_change` timestamp(2) NOT NULL DEFAULT CURRENT_TIMESTAMP(2)
+COMMENT 'Records the date and time when the data was manipulated. This will
+help to keep track of the changes made. The assumption is that no 2 users
+will change the exact same record at the same time (with a precision of a
+hundredth of a second, e.g., 4.26 seconds).',
+  `employeeNumber` int NOT NULL,
+  `lastName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `firstName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `extension` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `officeCode` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `reportsTo` int DEFAULT NULL,
+  `jobTitle` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `change_type` varchar(50) NOT NULL COMMENT 'Records the type of data
+manipulation that was done, for example an insertion, an update, or a
+deletion.',
+PRIMARY KEY (`date_of_change`),
+UNIQUE KEY `date_of_change_UNIQUE` (`date_of_change`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Create a trigger that is fired before updating an employee’s data
+CREATE
+TRIGGER TRG_BEFORE_UPDATE_ON_employees
+BEFORE UPDATE ON employees FOR EACH ROW
+INSERT INTO `employees_undo` SET
+`date_of_change` = CURRENT_TIMESTAMP(2),
+`employeeNumber` = OLD.`employeeNumber` ,
+`lastName` = OLD.`lastName` ,
+`firstName` = OLD.`firstName` ,
+`extension` = OLD.`extension` ,
+`email` = OLD.`email` ,
+`officeCode` = OLD.`officeCode` ,
+`reportsTo` = OLD.`reportsTo` ,
+`jobTitle` = OLD.`jobTitle` ,
+`change_type` = 'An update DML operation was executed';
+
+-- Step 3 Show triggers
+SHOW TRIGGERS;

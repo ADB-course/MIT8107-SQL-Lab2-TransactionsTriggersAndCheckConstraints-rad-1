@@ -140,18 +140,21 @@ VALUES
        );
 
 -- STEP 8 : Create a new table to store parts data
-CREATE TABLE part
-    (
-        part_no               VARCHAR(18) PRIMARY KEY                                                       ,
-        part_description      VARCHAR(255)                                                                  ,
-        part_supplier_tax_PIN VARCHAR (11) CHECK (part_supplier_tax_PIN REGEXP '^[A-Z]{1}[0-9]{9}[A-Z]{1}$'),
-        part_supplier_email   VARCHAR (55)                                                                  ,
-        part_buyingprice      DECIMAL(10,2 ) NOT NULL CHECK (part_buyingprice >= 0)                         ,
-        part_sellingprice     DECIMAL(10,2) NOT NULL                                                        ,
-        CONSTRAINT CHK_part_sellingprice_GT_buyingprice CHECK (part_sellingprice >= part_buyingprice)       ,
-        CONSTRAINT CHK_part_valid_supplier_email CHECK (part_supplier_email REGEXP '^[a-zA-Z0-9]{3,}@[a-zA-Z0-9]{1,}\\.[a-zA-Z0-9.]{1,}$')
-    )
-;
+create table part (
+part_no VARCHAR(18) primary key,
+part_description VARCHAR(255),
+part_supplier_tax_PIN VARCHAR (11) check (part_supplier_tax_PIN regexp
+'^[A-Z]{1}[0-9]{9}[A-Z]{1}$'),
+part_supplier_email VARCHAR (55),
+part_buyingprice DECIMAL(10,
+2 ) not null check (part_buyingprice >= 0),
+part_sellingprice DECIMAL(10,
+2) not null,
+constraint CHK_part_sellingprice_GT_buyingprice check
+(part_sellingprice >= part_buyingprice),
+constraint CHK_part_valid_supplier_email check (part_supplier_email
+regexp '^[a-zA-Z0-9]{3,}@[a-zA-Z0-9]{1,}\\.[a-zA-Z0-9.]{1,}$')
+);
 
 -- STEP 9. Create the following user-defined error in a trigger
 DELIMITER //
@@ -174,3 +177,8 @@ END
 // DELIMITER ;
 
 -- STEP 10 Confirm that the static, dynamic, and semantic constraints are working
+-- This failed due to the check constraint on selling price must be greater or equal to buying price
+INSERT INTO `part` (`part_no`, `part_description`, `part_supplier_tax_PIN`,
+`part_supplier_email`, `part_buyingprice`, `part_sellingprice`)
+VALUES ('001', 'The tyres of a 1958 Chevy Corvette Limited Edition',
+'P05120157U', 'toysRus@gmail', '100', '50');

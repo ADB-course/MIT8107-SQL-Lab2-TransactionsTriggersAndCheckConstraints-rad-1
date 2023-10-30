@@ -1,7 +1,7 @@
 USE 171836_lab2_triggers;
 SHOW CREATE TABLE employees;
 -- Create duplicate table
-CREATE TABLE `employees_undo` (
+CREATE TABLE `employees` (
 `date_of_change` timestamp(2) NOT NULL DEFAULT CURRENT_TIMESTAMP(2)
 COMMENT 'Records the date and time when the data was manipulated. This will
 help to keep track of the changes made. The assumption is that no 2 users

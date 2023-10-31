@@ -132,3 +132,40 @@ CONSTRAINT CHK_part_sellingprice_GT_buyingprice CHECK
 CONSTRAINT CHK_part_valid_supplier_email CHECK (part_supplier_email
 REGEXP '^[a-zA-Z0-9]{3,}@[a-zA-Z0-9]{1,}\\.[a-zA-Z0-9.]{1,}$')
 );
+DELIMITER //
+CREATE TRIGGER TRG_BEFORE_UPDATE_ON_part
+BEFORE UPDATE ON part FOR EACH ROW
+BEGIN
+DECLARE errorMessage VARCHAR(255);
+DECLARE EXIT HANDLER FOR SQLSTATE '45000'
+BEGIN
+RESIGNAL SET MESSAGE_TEXT = errorMessage;
+END;
+SET errorMessage = CONCAT('The new selling price of ',
+NEW.part_sellingprice, ' cannot be 2 times greater than the current selling
+price of ', OLD.part_sellingprice);
+IF NEW.part_sellingprice > OLD.part_sellingprice * 2 THEN
+SIGNAL SQLSTATE '45000';
+END IF;
+END//
+DELIMITER ;
+SIGNAL SQLSTATE 'sql_state_value' SET MESSAGE_TEXT = errorMessage;
+INSERT INTO `part` (`part_no`, `part_description`, `part_supplier_tax_PIN`,
+`part_supplier_email`, `part_buyingprice`, `part_sellingprice`)
+VALUES ('001', 'The tyres of a 1958 Chevy Corvette Limited Edition',
+'P05120157U', 'toysRus@gmail', '100', '50');
+INSERT INTO `part` (`part_no`, `part_description`, `part_supplier_tax_PIN`,
+`part_supplier_email`, `part_buyingprice`, `part_sellingprice`)
+VALUES ('001', 'The tyres of a 1958 Chevy Corvette Limited Edition',
+'P051201576U', 'toysRus@gmail', '100', '50');
+INSERT INTO `part` (`part_no`, `part_description`, `part_supplier_tax_PIN`,
+`part_supplier_email`, `part_buyingprice`, `part_sellingprice`)
+VALUES ('001', 'The tyres of a 1958 Chevy Corvette Limited Edition',
+'P051201576U', 'toysRus@gmail', '100', '100');
+INSERT INTO `part` (`part_no`, `part_description`, `part_supplier_tax_PIN`,
+`part_supplier_email`, `part_buyingprice`, `part_sellingprice`)
+VALUES ('001', 'The tyres of a 1958 Chevy Corvette Limited Edition',
+'P051201576U', 'toysRus@gmail.com', '100', '100');
+SHOW CREATE TABLE part;
+UPDATE `part` SET `part_sellingprice` = '250.00' WHERE (`part_no` = '001');
+SHOW TRIGGERS;

@@ -183,9 +183,7 @@ INSERT INTO `part` (`part_no`, `part_description`, `part_supplier_tax_PIN`,
 VALUES ('001', 'The tyres of a 1958 Chevy Corvette Limited Edition',
 'P05120157U', 'toysRus@gmail', '100', '50');
 
--- Assignment Section
--- Creating triggers that will be fired by the transaction
-
+-- Assignment submission
 -- This trigger prevents any transaction from updating the MSRP of a product to be less than its mrsp price or greater tripple its buying price
 DELIMITER //
 CREATE TRIGGER check_product_price BEFORE
@@ -212,9 +210,9 @@ END
 //
 DELIMITER;
 
-
 -- To test the above trigger, lets update the MSRP for product code S10_1678 to 155.00 using the query below
 update products  set MSRP =155 where productCode = 'S10_1678';
+
 
 DELIMITER $$
 CREATE TRIGGER products_quantity_check_trigger BEFORE UPDATE ON products
@@ -229,4 +227,3 @@ DELIMITER ;
 -- To test the above, lets start a transation
 
 select * from orderdetails o where productCode ='S18_1749' ;
-

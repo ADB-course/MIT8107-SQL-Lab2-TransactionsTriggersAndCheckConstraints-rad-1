@@ -53,3 +53,11 @@ INSERT INTO `employees_undo` SET
 `jobTitle` = OLD.`jobTitle` ,
 `change_type` = 'An update DML operation was executed';
 SHOW TRIGGERS;
+UPDATE `employees`
+SET
+`lastName` = 'Muiruri'
+WHERE
+
+Page 9 of 26
+
+`employeeNumber` = '1056';

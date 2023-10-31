@@ -58,3 +58,9 @@ SET
 `lastName` = 'Muiruri'
 WHERE
 `employeeNumber` = '1056';
+UPDATE `employees`
+SET
+`email` = 'mmuiruri@classicmodelcars.com'
+WHERE
+`employeeNumber` = '1056';
+SELECT * FROM employees_undo;

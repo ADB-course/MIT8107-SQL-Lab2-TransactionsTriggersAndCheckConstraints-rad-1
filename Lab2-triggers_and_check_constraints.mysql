@@ -57,7 +57,4 @@ UPDATE `employees`
 SET
 `lastName` = 'Muiruri'
 WHERE
-
-Page 9 of 26
-
 `employeeNumber` = '1056';

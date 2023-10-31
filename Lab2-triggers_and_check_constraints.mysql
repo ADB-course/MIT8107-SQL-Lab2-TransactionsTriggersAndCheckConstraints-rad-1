@@ -169,3 +169,26 @@ VALUES ('001', 'The tyres of a 1958 Chevy Corvette Limited Edition',
 SHOW CREATE TABLE part;
 UPDATE `part` SET `part_sellingprice` = '250.00' WHERE (`part_no` = '001');
 SHOW TRIGGERS;
+-- Create a sample table
+CREATE TABLE your_table (
+    id INT PRIMARY KEY,
+    value INT
+);
+
+-- Create a trigger that fires when the value is less than 0
+DELIMITER //
+CREATE TRIGGER trigger_name
+BEFORE INSERT ON your_table
+FOR EACH ROW
+BEGIN
+    IF NEW.value < 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Invalid data: Value cannot be negative';
+    END IF;
+END;
+//
+DELIMITER ;
+
+-- Create a check constraint that ensures the value is positive
+ALTER TABLE your_table
+ADD CONSTRAINT check_constraint_name CHECK (value >= 0);
